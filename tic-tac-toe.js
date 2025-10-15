@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let gameState = ['', '', '', '', '', '', '', '', ''];
     let gameActive = true;
 
+    // All the possible winning combinations
+    const winningCombos = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+        [0, 4, 8], [2, 4, 6]             // diagonals
+    ];
+
     boardSquares.forEach((square, index) => {
         square.addEventListener('click', function() {
             
@@ -16,9 +23,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 gameState[index] = currentPlayer;
                 square.textContent = currentPlayer;
                 square.classList.add(currentPlayer);
-                // Switches between X n O
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                updateStatusMessage();
+                
+                // Check if someone won after this move
+                checkWinner();
+                
+                // Only switch players if game is still going
+                if (gameActive) {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                    updateStatusMessage();
+                }
             }
         });
 
@@ -44,9 +57,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    function checkWinner() {
+        let roundWon = false;
+        let winningPlayer = '';
+
+        // Check each winning combo to see if anyone has 3 in a row
+        for (let i = 0; i < winningCombos.length; i++) {
+            const [a, b, c] = winningCombos[i];
+            
+            if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+                roundWon = true;
+                winningPlayer = gameState[a];
+                break;
+            }
+        }
+
+        if (roundWon) {
+            gameActive = false;
+            const status = document.getElementById('status');
+            status.textContent = `Congratulations! ${winningPlayer} is the Winner! 🎉`;
+            status.classList.add('you-won');
+        }
+    }
+
     function updateStatusMessage() {
         const status = document.getElementById('status');
         status.textContent = `Current player: ${currentPlayer}`;
+        status.classList.remove('you-won');
     }
 
     updateStatusMessage();
