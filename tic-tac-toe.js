@@ -57,6 +57,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // New Game button functionality
+    const newGameBtn = document.querySelector('.btn');
+    newGameBtn.addEventListener('click', function() {
+        resetGame();
+    });
+
+    function resetGame() {
+        // Clear the board visually
+        boardSquares.forEach(square => {
+            square.textContent = '';
+            square.classList.remove('X', 'O');
+        });
+        
+        // Reset game state
+        gameState = ['', '', '', '', '', '', '', '', ''];
+        currentPlayer = 'X';
+        gameActive = true;
+        
+        // Reset status message
+        const status = document.getElementById('status');
+        status.textContent = 'Move your mouse over a square and click to play an X or an O.';
+        status.classList.remove('you-won');
+    }
+
     function checkWinner() {
         let roundWon = false;
         let winningPlayer = '';
