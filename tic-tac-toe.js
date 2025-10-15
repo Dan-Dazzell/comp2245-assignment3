@@ -1,32 +1,45 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Get all the div elements inside the board and add square class
     const boardSquares = document.querySelectorAll('#board div');
     boardSquares.forEach(square => {
         square.classList.add('square');
     });
 
-    // Game state variables
-    let currentPlayer = 'X'; // X goes first
-    let gameState = ['', '', '', '', '', '', '', '', '']; // Empty array to track moves
+    
+    let currentPlayer = 'X';
+    let gameState = ['', '', '', '', '', '', '', '', ''];
     let gameActive = true;
 
-    // Add click event listeners to all squares
     boardSquares.forEach((square, index) => {
         square.addEventListener('click', function() {
-            // Only proceed if square is empty and game is active
+            
             if (gameState[index] === '' && gameActive) {
-                // Update game state
                 gameState[index] = currentPlayer;
-                
-                // Update visual display
                 square.textContent = currentPlayer;
                 square.classList.add(currentPlayer);
-                
-                // Switch to the other player
+                // Switches between X n O
                 currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                
-                // Optional: Update status message
                 updateStatusMessage();
+            }
+        });
+
+
+        square.addEventListener('mouseover', function() {
+            if (gameState[index] === '' && gameActive) {
+                square.classList.add('hover');
+                // Preview part
+                if (!square.textContent) {
+                    square.textContent = currentPlayer;
+                    square.classList.add(currentPlayer);
+                }
+            }
+        });
+
+        square.addEventListener('mouseout', function() {
+            square.classList.remove('hover');
+            // Remove the preview if nobody actually played here
+            if (gameState[index] === '') {
+                square.textContent = '';
+                square.classList.remove('X', 'O');
             }
         });
     });
@@ -36,6 +49,5 @@ document.addEventListener('DOMContentLoaded', function() {
         status.textContent = `Current player: ${currentPlayer}`;
     }
 
-    // Initialize status message
     updateStatusMessage();
 });
